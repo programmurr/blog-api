@@ -6,6 +6,8 @@ const routes = require("./src/routes/index");
 
 const app = express();
 
+// TODO: ENABLE CORS FOR FRONT END ONCE ROUTES COMPLETE
+
 // Add production URL later when ready
 const url = process.env.DEV_URL;
 mongoose.connect(url);

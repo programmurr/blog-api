@@ -32,7 +32,7 @@ const articleSchema = new Schema({
 });
 
 articleSchema.virtual("url").get(function () {
-  return `/posts/${this._id}`;
+  return `/articles/${this._id}`;
 });
 
 articleSchema.virtual("date").get(function () {

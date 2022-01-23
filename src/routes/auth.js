@@ -22,9 +22,9 @@ exports.login = async (req, res) => {
           .json({ message: "Error logging in User", error });
       }
       const token = jwt.sign({ user }, process.env.SECRET_KEY, {
-        expiresIn: "2 days",
+        expiresIn: "1d",
       });
-      // SAVE TOKEN to localStorage in front end!
+      // TODO: SAVE TOKEN TO LOCALSTORAGE ON FRONT END!
       return res.status(200).json({ user, token });
     });
   })(req, res);
