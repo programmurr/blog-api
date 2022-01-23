@@ -40,12 +40,12 @@ passport.use(
       secretOrKey: process.env.SECRET_KEY,
     },
     function (jwtPayload, done) {
-      return User.findOneById(jwtPayload.id)
+      return User.findById(jwtPayload.user._id)
         .then((user) => {
           return done(null, user);
         })
-        .catch((err) => {
-          return done(err);
+        .catch((error) => {
+          return done(error);
         });
     }
   )

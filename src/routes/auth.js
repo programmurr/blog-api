@@ -24,7 +24,8 @@ exports.login = async (req, res) => {
       const token = jwt.sign({ user }, process.env.SECRET_KEY, {
         expiresIn: "2 days",
       });
-      return res.json({ user, token });
+      // SAVE TOKEN to localStorage in front end!
+      return res.status(200).json({ user, token });
     });
   })(req, res);
 };

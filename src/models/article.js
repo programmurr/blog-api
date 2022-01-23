@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const { Schema } = mongoose;
 const { format } = require("date-fns");
 
-const postSchema = new Schema({
+const articleSchema = new Schema({
   title: {
     type: String,
     required: true,
@@ -31,12 +31,12 @@ const postSchema = new Schema({
   },
 });
 
-postSchema.virtual("url").get(function () {
+articleSchema.virtual("url").get(function () {
   return `/posts/${this._id}`;
 });
 
-postSchema.virtual("date").get(function () {
+articleSchema.virtual("date").get(function () {
   return format(this.timestamp, "H:mmbb, dd/MM/yyyy");
 });
 
-module.exports = mongoose.model("Post", postSchema);
+module.exports = mongoose.model("Article", articleSchema);
