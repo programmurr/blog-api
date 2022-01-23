@@ -1,6 +1,7 @@
 require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
+const passport = require("passport");
 const routes = require("./src/routes/index");
 
 const app = express();
@@ -14,6 +15,7 @@ db.on("error", console.error.bind(console, "MongoDB connection error: "));
 require("./src/passport");
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(passport.initialize());
 app.use("/", routes);
 
 app.listen(process.env.PORT, () => {
