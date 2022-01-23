@@ -19,13 +19,13 @@ passport.use(
           return done(error);
         }
         if (!user) {
-          return done(null, false, { message: "Incorrect username" });
+          return done(null, false);
         }
         bcrypt.compare(password, user.password, (err, res) => {
           if (res) {
             return done(null, user);
           } else {
-            return done(null, false, { message: "Incorrect password" });
+            return done(null, false);
           }
         });
       });
