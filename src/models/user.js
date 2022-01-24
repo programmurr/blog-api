@@ -11,7 +11,7 @@ const userSchema = new Schema({
     type: String,
     required: true,
   },
-  posts: [
+  articles: [
     {
       type: Schema.Types.ObjectId,
       ref: "Article",

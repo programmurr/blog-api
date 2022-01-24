@@ -5,11 +5,14 @@ const passport = require("passport");
 const auth = require("./auth");
 const userController = require("../controllers/userController");
 const articleController = require("../controllers/articleController");
-
-router.post("/signup", userController.user_create_post);
+const commentController = require("../controllers/commentController");
 
 router.post("/login", auth.login);
 // TODO: IMPLEMENT LOGOUT ON CLIENT SIDE BY DESTORYING TOKEN IN LOCALSTORAGE
+
+// ARTICLE ROUTES
+
+router.get("/articles", articleController.articles_get);
 
 router.post(
   "/articles",
@@ -17,19 +20,23 @@ router.post(
   articleController.article_create_post
 );
 
+router.get("/articles/:id", articleController.article_detail);
+
+// USER ROUTES
+router.post("/signup", userController.user_create_post);
+
+// COMMENT ROUTES
+router.get("/articles/:id/comments", commentController.article_comments_get);
+
 // PLANNED ROUTES
 // ARTICLES
-// /articles GET
-// /articles/:id GET
-// /articles CREATE GET - PROTECTED - ADMIN
-// Finish articles CREATE POST - PROTECTED - ADMIN
 // /articles/:id DELETE GET - PROTECTED - ADMIN
 // /articles/:id DELETE - PROTECTED - ADMIN
 // /articles/:id UPDATE GET - PROTECTED - ADMIN
 // /articles/:id UPDATE PUT - PROTECTED - ADMIN
 
 // COMMENTS
-// /articles/:id/comments GET
+// /comments CREATE POST - PROTECTED - AUTHOR
 // /comments/:id UPDATE GET - PROTECTED - AUTHOR
 // /comments/:id UPDATE PUT - PROTECTED - AUTHOR
 // /comments/:id DELETE GET - PROTECTED - AUTHOR/ADMIN

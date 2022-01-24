@@ -11,9 +11,9 @@ const commentSchema = new Schema({
     type: Date,
     default: new Date(),
   },
-  post: {
+  article: {
     type: Schema.Types.ObjectId,
-    ref: "Post",
+    ref: "Article",
   },
   author: {
     type: Schema.Types.ObjectId,
