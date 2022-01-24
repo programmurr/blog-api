@@ -3,7 +3,7 @@ const User = require("../models/user");
 
 const { body, validationResult } = require("express-validator");
 
-exports.article_get_all = async (req, res, next) => {
+exports.articles_get = async (req, res, next) => {
   try {
     const articles = await Article.find().sort({ timestamp: -1 }).exec();
     return res.status(200).json({ articles });

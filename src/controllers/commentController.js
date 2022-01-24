@@ -1,6 +1,6 @@
 const Comment = require("../models/comment");
 
-exports.comment_get_all = async (req, res) => {
+exports.article_comments_get = async (req, res) => {
   try {
     const comments = await Comment.find({ article: req.params.id })
       .populate("author")
