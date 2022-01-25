@@ -26,13 +26,13 @@ exports.article_detail = async (req, res, next) => {
 exports.article_create_post = [
   body("title", "Article title cannot be left blank")
     .trim()
-    .isLength({ min: 3, max: 100 })
-    .withMessage("Title must be between 3 and 100 characters")
+    .isLength({ min: 3, max: 300 })
+    .withMessage("Title must be between 3 and 300 characters")
     .escape(),
   body("body", "Article body cannot be left blank")
     .trim()
-    .isLength({ min: 1, max: 3000 })
-    .withMessage("Article must be between 1 and 3000 characters")
+    .isLength({ min: 1, max: 10000 })
+    .withMessage("Article must be between 1 and 10000 characters")
     .escape(),
   async (req, res, next) => {
     const { title, body } = req.body;

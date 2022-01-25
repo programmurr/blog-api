@@ -28,6 +28,12 @@ router.post("/signup", userController.user_create_post);
 // COMMENT ROUTES
 router.get("/articles/:id/comments", commentController.article_comments_get);
 
+router.post(
+  "/articles/:id/comments",
+  passport.authenticate("jwt", { session: false }),
+  commentController.comment_create_post
+);
+
 // PLANNED ROUTES
 // ARTICLES
 // /articles/:id DELETE GET - PROTECTED - ADMIN
@@ -36,7 +42,6 @@ router.get("/articles/:id/comments", commentController.article_comments_get);
 // /articles/:id UPDATE PUT - PROTECTED - ADMIN
 
 // COMMENTS
-// /comments CREATE POST - PROTECTED - AUTHOR
 // /comments/:id UPDATE GET - PROTECTED - AUTHOR
 // /comments/:id UPDATE PUT - PROTECTED - AUTHOR
 // /comments/:id DELETE GET - PROTECTED - AUTHOR/ADMIN
