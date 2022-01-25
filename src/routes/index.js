@@ -25,6 +25,12 @@ router.get("/articles/:id", articleController.article_detail);
 // USER ROUTES
 router.post("/signup", userController.user_create_post);
 
+router.get(
+  "/users/:id",
+  passport.authenticate("jwt", { session: false }),
+  userController.user_detail
+);
+
 // COMMENT ROUTES
 router.get("/articles/:id/comments", commentController.article_comments_get);
 
