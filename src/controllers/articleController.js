@@ -1,11 +1,15 @@
 const Article = require("../models/article");
 const User = require("../models/user");
+const Comment = require("../models/comment");
 
 const { body, validationResult } = require("express-validator");
 
 exports.articles_get = async (req, res, next) => {
   try {
-    const articles = await Article.find().sort({ timestamp: -1 }).exec();
+    const articles = await Article.find()
+      .populate("author", "username")
+      .sort({ timestamp: -1 })
+      .exec();
     return res.status(200).json({ articles });
   } catch (error) {
     return next(error);
@@ -61,3 +65,32 @@ exports.article_create_post = [
     }
   },
 ];
+
+// TODO:
+// User articles are not being updated - FIX
+// Test article ID: 61f4517bbda79f4f97137d6b
+exports.article_delete_post = async (req, res) => {
+  const article = await Article.findById(req.params.id)
+    .populate("author", "articles")
+    .exec();
+  const author = article.author;
+  if (req.user.admin) {
+    try {
+      const updatedArticles = author.articles.filter((authorArticle) => {
+        return authorArticle._id.toString() !== req.params.id;
+      });
+      author.articles = updatedArticles;
+      await User.findByIdAndUpdate(author._id, {
+        articles: updatedArticles,
+      }).exec();
+      await Comment.deleteMany({ article: req.params.id }).exec();
+      await Article.findByIdAndRemove(req.params.id).exec();
+      return res.status(200).json({ message: "Article deleted" });
+    } catch (error) {
+      return res.status(500).json({
+        message: "Error deleting article",
+        error,
+      });
+    }
+  }
+};

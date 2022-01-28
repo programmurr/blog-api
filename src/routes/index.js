@@ -22,6 +22,12 @@ router.post(
 
 router.get("/articles/:id", articleController.article_detail);
 
+router.delete(
+  "/articles/:id",
+  passport.authenticate("jwt", { session: false }),
+  articleController.article_delete_post
+);
+
 // USER ROUTES
 router.post("/signup", userController.user_create_post);
 
@@ -54,7 +60,6 @@ router.post(
 // /comments/:id DELETE - PROTECTED - AUTHOR/ADMIN
 
 // USER
-// /users/:id GET - PROTECTED - ADMIN
 // /users/:id UPDATE GET - PROTECTED - AUTHOR/ADMIN
 // /users/:id UPDATE PUT - PROTECTED - AUTHOR/ADMIN
 
