@@ -58,7 +58,9 @@ exports.article_create_post = [
         await newArticle.save();
         user.articles.push(newArticle._id);
         await User.findByIdAndUpdate(user._id, user).exec();
-        return res.status(200).json({ articleUrl: newArticle.url });
+        return res
+          .status(200)
+          .json({ article: newArticle, articleUrl: newArticle.url });
       } catch (error) {
         return next(error);
       }
@@ -66,9 +68,6 @@ exports.article_create_post = [
   },
 ];
 
-// TODO:
-// User articles are not being updated - FIX
-// Test article ID: 61f4517bbda79f4f97137d6b
 exports.article_delete_post = async (req, res) => {
   const article = await Article.findById(req.params.id)
     .populate("author", "articles")
@@ -92,5 +91,33 @@ exports.article_delete_post = async (req, res) => {
         error,
       });
     }
+  }
+};
+
+// Currently only for updating 'Published' status
+exports.article_update_put = async (req, res) => {
+  try {
+    if (
+      req.user.admin &&
+      (req.body.published === true || req.body.published === false)
+    ) {
+      await Article.findByIdAndUpdate(req.params.id, {
+        published: req.body.published,
+      }).exec();
+      return res.status(200).json({
+        message: "Article publish status successfully updated",
+      });
+    } else if (!req.user.admin) {
+      return res.status(403).json({
+        message: "Not authorized to update Article status",
+      });
+    } else {
+      return res.status(400).json({ message: "Bad request" });
+    }
+  } catch (error) {
+    return res.status(500).json({
+      message: "Error updating article",
+      error,
+    });
   }
 };

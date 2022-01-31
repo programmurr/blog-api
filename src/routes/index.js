@@ -28,6 +28,12 @@ router.delete(
   articleController.article_delete_post
 );
 
+router.put(
+  "/articles/:id",
+  passport.authenticate("jwt", { session: false }),
+  articleController.article_update_put
+);
+
 // USER ROUTES
 router.post("/signup", userController.user_create_post);
 
@@ -48,19 +54,12 @@ router.post(
 
 // PLANNED ROUTES
 // ARTICLES
-// /articles/:id DELETE GET - PROTECTED - ADMIN
-// /articles/:id DELETE - PROTECTED - ADMIN
 // /articles/:id UPDATE GET - PROTECTED - ADMIN
 // /articles/:id UPDATE PUT - PROTECTED - ADMIN
 
 // COMMENTS
 // /comments/:id UPDATE GET - PROTECTED - AUTHOR
 // /comments/:id UPDATE PUT - PROTECTED - AUTHOR
-// /comments/:id DELETE GET - PROTECTED - AUTHOR/ADMIN
 // /comments/:id DELETE - PROTECTED - AUTHOR/ADMIN
-
-// USER
-// /users/:id UPDATE GET - PROTECTED - AUTHOR/ADMIN
-// /users/:id UPDATE PUT - PROTECTED - AUTHOR/ADMIN
 
 module.exports = router;
