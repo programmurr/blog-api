@@ -40,10 +40,13 @@ exports.user_create_post = [
       }
       try {
         await user.save();
-        res.json({ message: "User saved to DB", user });
-        return;
+        return res.json({ message: "User saved to DB", user });
       } catch (error) {
-        return next(error);
+        return res.status(500).json({
+          message: "Error creating User",
+          errorMessage: error.message,
+          errorStack: error.stack,
+        });
       }
     });
   },
@@ -52,12 +55,16 @@ exports.user_create_post = [
 exports.user_detail = async (req, res) => {
   if (req.user.admin && req.user.id === req.params.id) {
     try {
-      const user = await User.findById(req.params.id);
+      const user = await User.findById(req.params.id).exec();
+      if (user == null) {
+        return res.status(400).json({ message: "User does not exist" });
+      }
       return res.status(200).json({ user });
     } catch (error) {
       return res.status(500).json({
         message: "Error getting User profile",
-        error,
+        errorMessage: error.message,
+        errorStack: error.stack,
       });
     }
   } else {

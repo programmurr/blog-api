@@ -4,7 +4,7 @@ const Comment = require("../models/comment");
 
 const { body, validationResult } = require("express-validator");
 
-exports.articles_get = async (req, res, next) => {
+exports.articles_get = async (req, res) => {
   try {
     const articles = await Article.find()
       .populate("author", "username")
@@ -12,18 +12,29 @@ exports.articles_get = async (req, res, next) => {
       .exec();
     return res.status(200).json({ articles });
   } catch (error) {
-    return next(error);
+    return res.status(500).json({
+      message: "Error getting all articles",
+      errorMessage: error.message,
+      errorStack: error.stack,
+    });
   }
 };
 
-exports.article_detail = async (req, res, next) => {
+exports.article_detail = async (req, res) => {
   try {
     const article = await Article.findById(req.params.id)
       .populate("author")
       .exec();
+    if (article == null) {
+      return res.status(400).json({ message: "Article does not exist" });
+    }
     return res.status(200).json({ article });
   } catch (error) {
-    return next(error);
+    return res.status(500).json({
+      message: "Error getting article detail",
+      errorMessage: error.message,
+      errorStack: error.stack,
+    });
   }
 };
 
@@ -38,7 +49,7 @@ exports.article_create_post = [
     .isLength({ min: 1, max: 10000 })
     .withMessage("Article must be between 1 and 10000 characters")
     .escape(),
-  async (req, res, next) => {
+  async (req, res) => {
     const { title, body } = req.body;
     const { user } = req;
     const errors = validationResult(req);
@@ -62,7 +73,11 @@ exports.article_create_post = [
           .status(200)
           .json({ article: newArticle, articleUrl: newArticle.url });
       } catch (error) {
-        return next(error);
+        return res.status(500).json({
+          message: "Error creating article",
+          errorMessage: error.message,
+          errorStack: error.stack,
+        });
       }
     }
   },
@@ -88,7 +103,8 @@ exports.article_delete_post = async (req, res) => {
     } catch (error) {
       return res.status(500).json({
         message: "Error deleting article",
-        error,
+        errorMessage: error.message,
+        errorStack: error.stack,
       });
     }
   }
@@ -133,7 +149,8 @@ exports.article_update_put = [
       } catch (error) {
         return res.status(500).json({
           message: "Error updating article",
-          error,
+          errorMessage: error.message,
+          errorStack: error.stack,
         });
       }
     } else {

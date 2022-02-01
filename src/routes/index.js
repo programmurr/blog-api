@@ -51,11 +51,16 @@ router.post(
   commentController.comment_create_post
 );
 
+router.delete(
+  "/comments/:id",
+  passport.authenticate("jwt", { session: false }),
+  commentController.comment_delete
+);
+
 // PLANNED ROUTES
 
 // COMMENTS
 // /comments/:id UPDATE GET - PROTECTED - AUTHOR
 // /comments/:id UPDATE PUT - PROTECTED - AUTHOR
-// /comments/:id DELETE - PROTECTED - AUTHOR/ADMIN
 
 module.exports = router;

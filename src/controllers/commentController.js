@@ -12,7 +12,11 @@ exports.article_comments_get = async (req, res) => {
       .exec();
     return res.status(200).json({ comments });
   } catch (error) {
-    return res.status(404).json({ error });
+    return res.status(404).json({
+      message: "Error getting all article comments",
+      errorMessage: error.message,
+      errorStack: error.stack,
+    });
   }
 };
 
@@ -50,7 +54,8 @@ exports.comment_create_post = [
             return res.status(500).json({
               message: "Error saving comment",
               comment: newComment,
-              error,
+              errorMessage: error.message,
+              errorStack: error.stack,
             });
           }
           article.comments = [...article.comments, newComment._id];
@@ -64,9 +69,43 @@ exports.comment_create_post = [
         return res.status(500).json({
           message: "Error saving comment",
           comment: newComment,
-          error,
+          errorMessage: error.message,
+          errorStack: error.stack,
         });
       }
     }
   },
 ];
+
+// TODO remove comment from article history
+exports.comment_delete = async (req, res) => {
+  try {
+    const comment = await Comment.findById(req.params.id)
+      .populate("author")
+      .exec();
+    if (req.user.admin || comment.author.id === req.user.id) {
+      const updatedComments = comment.author.comments.filter(
+        (authorComment) => {
+          return authorComment._id.toString() !== req.params.id;
+        }
+      );
+      await User.findByIdAndUpdate(comment.author._id, {
+        comments: updatedComments,
+      }).exec();
+      await Comment.findByIdAndDelete(req.params.id).exec();
+      return res
+        .status(200)
+        .json({ message: "Deleted comment from comment DB" });
+    } else {
+      return res
+        .status(403)
+        .json({ message: "Unauthorized to delete this comment" });
+    }
+  } catch (error) {
+    return res.status(500).json({
+      message: "Error deleting comment",
+      errorMessage: error.message,
+      errorStack: error.stack,
+    });
+  }
+};
