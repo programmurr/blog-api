@@ -11,7 +11,6 @@ router.post("/login", auth.login);
 // TODO: IMPLEMENT LOGOUT ON CLIENT SIDE BY DESTORYING TOKEN IN LOCALSTORAGE
 
 // ARTICLE ROUTES
-
 router.get("/articles", articleController.articles_get);
 
 router.post(
@@ -53,9 +52,6 @@ router.post(
 );
 
 // PLANNED ROUTES
-// ARTICLES
-// /articles/:id UPDATE GET - PROTECTED - ADMIN
-// /articles/:id UPDATE PUT - PROTECTED - ADMIN
 
 // COMMENTS
 // /comments/:id UPDATE GET - PROTECTED - AUTHOR

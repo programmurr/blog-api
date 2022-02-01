@@ -94,30 +94,52 @@ exports.article_delete_post = async (req, res) => {
   }
 };
 
-// Currently only for updating 'Published' status
-exports.article_update_put = async (req, res) => {
-  try {
-    if (
-      req.user.admin &&
-      (req.body.published === true || req.body.published === false)
-    ) {
-      await Article.findByIdAndUpdate(req.params.id, {
-        published: req.body.published,
-      }).exec();
-      return res.status(200).json({
-        message: "Article publish status successfully updated",
+exports.article_update_put = [
+  body("title", "Article title cannot be left blank")
+    .trim()
+    .isLength({ min: 3, max: 300 })
+    .withMessage("Title must be between 3 and 300 characters")
+    .escape(),
+  body("body", "Article body cannot be left blank")
+    .trim()
+    .isLength({ min: 1, max: 10000 })
+    .withMessage("Article must be between 1 and 10000 characters")
+    .escape(),
+  async (req, res) => {
+    if (req.user.admin) {
+      const { title, body, published } = req.body;
+      const { user } = req;
+      const errors = validationResult(req);
+      const updatedArticle = new Article({
+        title,
+        body,
+        published: published === "on" ? true : false,
+        author: user._id,
+        _id: req.params.id,
       });
-    } else if (!req.user.admin) {
+      try {
+        if (!errors.isEmpty()) {
+          return res.status(400).json({
+            message: "Invalid article data",
+            article: updatedArticle,
+            errors: errors.array(),
+          });
+        }
+        await Article.findByIdAndUpdate(req.params.id, updatedArticle).exec();
+        return res.status(200).json({
+          message: "Article successfully updated",
+          article: updatedArticle,
+        });
+      } catch (error) {
+        return res.status(500).json({
+          message: "Error updating article",
+          error,
+        });
+      }
+    } else {
       return res.status(403).json({
         message: "Not authorized to update Article status",
       });
-    } else {
-      return res.status(400).json({ message: "Bad request" });
     }
-  } catch (error) {
-    return res.status(500).json({
-      message: "Error updating article",
-      error,
-    });
-  }
-};
+  },
+];
