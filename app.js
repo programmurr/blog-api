@@ -1,6 +1,7 @@
 const createError = require("http-errors");
 require("dotenv").config();
 const express = require("express");
+const cors = require("cors");
 const mongoose = require("mongoose");
 const routes = require("./src/routes/index");
 
@@ -8,12 +9,13 @@ const app = express();
 
 // TODO: ENABLE CORS FOR FRONT END ONCE ROUTES COMPLETE
 
-// Add production URL later when ready
+// TODO: Add production URL later when ready
 const url = process.env.DEV_URL;
 mongoose.connect(url);
 const db = mongoose.connection;
 db.on("error", console.error.bind(console, "MongoDB connection error: "));
 
+app.use(cors());
 require("./src/passport");
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
