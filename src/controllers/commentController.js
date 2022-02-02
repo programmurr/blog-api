@@ -77,25 +77,31 @@ exports.comment_create_post = [
   },
 ];
 
-// TODO remove comment from article history
 exports.comment_delete = async (req, res) => {
   try {
     const comment = await Comment.findById(req.params.id)
       .populate("author")
+      .populate("article")
       .exec();
     if (req.user.admin || comment.author.id === req.user.id) {
-      const updatedComments = comment.author.comments.filter(
+      const updatedAuthorComments = comment.author.comments.filter(
         (authorComment) => {
           return authorComment._id.toString() !== req.params.id;
         }
       );
       await User.findByIdAndUpdate(comment.author._id, {
-        comments: updatedComments,
+        comments: updatedAuthorComments,
       }).exec();
       await Comment.findByIdAndDelete(req.params.id).exec();
-      return res
-        .status(200)
-        .json({ message: "Deleted comment from comment DB" });
+      const updatedArticleComments = comment.article.comments.filter(
+        (articleComment) => {
+          return articleComment._id.toString() !== req.params.id;
+        }
+      );
+      await Article.findByIdAndUpdate(comment.article._id, {
+        comments: updatedArticleComments,
+      }).exec();
+      return res.status(200).json({ message: "Deleted comment from database" });
     } else {
       return res
         .status(403)

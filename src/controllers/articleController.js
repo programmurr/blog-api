@@ -126,14 +126,21 @@ exports.article_update_put = [
       const { title, body, published } = req.body;
       const { user } = req;
       const errors = validationResult(req);
-      const updatedArticle = new Article({
-        title,
-        body,
-        published: published === "on" ? true : false,
-        author: user._id,
-        _id: req.params.id,
-      });
       try {
+        const existingArticle = await Article.findById(req.params.id).exec();
+        if (existingArticle == null) {
+          return res.status(400).json({
+            message: `Article with ID ${req.params.id} cannot be found`,
+          });
+        }
+        const updatedArticle = new Article({
+          title,
+          body,
+          author: user._id,
+          comments: existingArticle.comments,
+          published: published === "on" ? true : false,
+          _id: req.params.id,
+        });
         if (!errors.isEmpty()) {
           return res.status(400).json({
             message: "Invalid article data",

@@ -57,8 +57,6 @@ router.delete(
   commentController.comment_delete
 );
 
-// PLANNED ROUTES
-
 // COMMENTS
 // /comments/:id UPDATE GET - PROTECTED - AUTHOR
 // /comments/:id UPDATE PUT - PROTECTED - AUTHOR
