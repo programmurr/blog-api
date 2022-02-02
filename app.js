@@ -7,14 +7,13 @@ const routes = require("./src/routes/index");
 
 const app = express();
 
-// TODO: ENABLE CORS FOR FRONT END ONCE ROUTES COMPLETE
-
 // TODO: Add production URL later when ready
 const url = process.env.DEV_URL;
 mongoose.connect(url);
 const db = mongoose.connection;
 db.on("error", console.error.bind(console, "MongoDB connection error: "));
 
+// TODO: Configure for production
 app.use(cors());
 require("./src/passport");
 app.use(express.json());

@@ -6,7 +6,7 @@ const { body, validationResult } = require("express-validator");
 
 exports.articles_get = async (req, res) => {
   try {
-    const articles = await Article.find()
+    const articles = await Article.find({ published: true })
       .populate("author", "username")
       .sort({ timestamp: -1 })
       .exec();

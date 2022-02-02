@@ -1,6 +1,5 @@
 const mongoose = require("mongoose");
 const { Schema } = mongoose;
-const { format } = require("date-fns");
 
 const articleSchema = new Schema({
   title: {
@@ -33,10 +32,6 @@ const articleSchema = new Schema({
 
 articleSchema.virtual("url").get(function () {
   return `/articles/${this._id}`;
-});
-
-articleSchema.virtual("date").get(function () {
-  return format(this.timestamp, "H:mmbb, dd/MM/yyyy");
 });
 
 module.exports = mongoose.model("Article", articleSchema);
