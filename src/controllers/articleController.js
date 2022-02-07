@@ -23,7 +23,7 @@ exports.articles_get = async (req, res) => {
 exports.article_detail = async (req, res) => {
   try {
     const article = await Article.findById(req.params.id)
-      .populate("author")
+      .populate("author", "username")
       .exec();
     if (article == null) {
       return res.status(400).json({ message: "Article does not exist" });
